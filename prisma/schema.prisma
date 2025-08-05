@@ -19,14 +19,52 @@ model User {
   name      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  
+  profile   UserProfile?
+  weightRecords WeightRecord[]
+  goals     Goal[]
 }
 
-model Post {
+model UserProfile {
   id        String   @id @default(cuid())
+  userId    String   @unique
+  height    Float    // altura em cm
+  initialWeight Float // peso inicial em kg
+  targetWeight Float // peso alvo em kg
+  birthDate DateTime?
+  gender    String?  // 'male', 'female', 'other'
+  activityLevel String? // 'sedentary', 'light', 'moderate', 'active', 'very_active'
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model WeightRecord {
+  id        String   @id @default(cuid())
+  userId    String
+  weight    Float    // peso em kg
+  date      DateTime @default(now())
+  notes     String?
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  
+  @@unique([userId, date])
+}
+
+model Goal {
+  id        String   @id @default(cuid())
+  userId    String
   title     String
-  content   String?
-  published Boolean  @default(false)
-  authorId  String
+  description String?
+  targetWeight Float  // peso alvo em kg
+  startDate DateTime
+  targetDate DateTime
+  isActive  Boolean  @default(true)
+  achieved  Boolean  @default(false)
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
