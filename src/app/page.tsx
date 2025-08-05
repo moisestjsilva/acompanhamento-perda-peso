@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic'
 
 // Dynamically import the WeightTracker component with SSR disabled
-const WeightTracker = dynamic(() => import('@/components/WeightTracker'), {
+const WeightTrackerWithSupabase = dynamic(() => import('@/components/WeightTrackerWithSupabase'), {
   ssr: false,
   loading: () => (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
@@ -20,5 +20,5 @@ const WeightTracker = dynamic(() => import('@/components/WeightTracker'), {
 })
 
 export default function Home() {
-  return <WeightTracker />
+  return <WeightTrackerWithSupabase userId="user-123" />
 }

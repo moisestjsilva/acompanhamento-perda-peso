@@ -44,7 +44,7 @@ export function useSupabaseWeightTracker(userId: string) {
   const fetchUserProfile = async () => {
     try {
       const { data, error } = await supabase
-        .from('user_profiles')
+        .from('user_weight_profiles')
         .select('*')
         .eq('user_id', userId)
         .single()
@@ -86,7 +86,7 @@ export function useSupabaseWeightTracker(userId: string) {
   const updateUserProfile = async (profile: Partial<UserProfile>) => {
     try {
       const { data, error } = await supabase
-        .from('user_profiles')
+        .from('user_weight_profiles')
         .upsert([
           {
             user_id: userId,
