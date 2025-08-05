@@ -55,71 +55,81 @@ export default function PhotoComparison({ photos, weightRecords }: PhotoComparis
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Cards de Estatísticas */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total de Fotos</CardTitle>
-            <Camera className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{photos.length}</div>
-            <p className="text-xs text-muted-foreground">
-              {sortedDates.length} dias registrados
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Período</CardTitle>
-            <Calendar className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-lg font-bold">
-              {sortedDates.length > 1 ? `${sortedDates.length} dias` : '1 dia'}
+      <div className="grid grid-cols-3 gap-3">
+        <Card className="border-0 shadow-sm bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+          <CardContent className="p-3">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                <Camera className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-medium text-muted-foreground">Fotos</p>
+                <p className="text-lg font-bold text-foreground">{photos.length}</p>
+              </div>
             </div>
-            <p className="text-xs text-muted-foreground">
-              {sortedDates.length > 0 && (
-                `${new Date(sortedDates[0]).toLocaleDateString('pt-BR')} - ${new Date(sortedDates[sortedDates.length - 1]).toLocaleDateString('pt-BR')}`
-              )}
-            </p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Modo de Visualização</CardTitle>
-            <Maximize2 className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <Select value={comparisonMode} onValueChange={(value: 'side-by-side' | 'slider') => setComparisonMode(value)}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="side-by-side">Lado a Lado</SelectItem>
-                <SelectItem value="slider">Slider</SelectItem>
-              </SelectContent>
-            </Select>
+        <Card className="border-0 shadow-sm bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+          <CardContent className="p-3">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                <Calendar className="h-4 w-4 text-green-600 dark:text-green-400" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-medium text-muted-foreground">Dias</p>
+                <p className="text-lg font-bold text-foreground">{sortedDates.length}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 shadow-sm bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+          <CardContent className="p-3">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                <Maximize2 className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-medium text-muted-foreground">Modo</p>
+                <Select value={comparisonMode} onValueChange={(value: 'side-by-side' | 'slider') => setComparisonMode(value)}>
+                  <SelectTrigger className="h-6 text-xs border-0 bg-transparent p-0 font-bold">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="side-by-side">Lado a Lado</SelectItem>
+                    <SelectItem value="slider">Slider</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
 
       {/* Seletor de Fotos para Comparação */}
       {availablePhotos.length >= 2 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Comparar Fotos</CardTitle>
-            <CardDescription>Selecione duas fotos para comparar seu progresso</CardDescription>
+        <Card className="border-0 shadow-sm bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <ArrowLeft className="h-5 w-5 text-blue-500" />
+              Comparar Progresso
+            </CardTitle>
+            <CardDescription className="text-sm">Selecione duas fotos para comparar</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <CardContent className="space-y-4 pt-0">
+            <div className="space-y-3">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Foto "Antes"</label>
+                <label className="text-sm font-medium flex items-center gap-2">
+                  <div className="w-4 h-4 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
+                    <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                  </div>
+                  Foto "Antes"
+                </label>
                 <Select value={selectedBefore} onValueChange={setSelectedBefore}>
-                  <SelectTrigger>
+                  <SelectTrigger className="border-0 bg-gray-50 dark:bg-gray-700/50">
                     <SelectValue placeholder="Selecione a foto inicial" />
                   </SelectTrigger>
                   <SelectContent>
@@ -127,11 +137,18 @@ export default function PhotoComparison({ photos, weightRecords }: PhotoComparis
                       const record = getWeightRecordForPhoto(photo)
                       return (
                         <SelectItem key={photo.id} value={photo.id}>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded overflow-hidden">
+                              <img
+                                src={photo.filePath}
+                                alt="Preview"
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
                             <div>
                               <div className="font-medium">{record?.weight.toFixed(1)} kg</div>
                               <div className="text-xs text-muted-foreground">
-                                {new Date(photo.createdAt).toLocaleDateString('pt-BR')}
+                                {new Date(photo.createdAt).toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' })}
                               </div>
                             </div>
                           </div>
@@ -143,9 +160,14 @@ export default function PhotoComparison({ photos, weightRecords }: PhotoComparis
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">Foto "Depois"</label>
+                <label className="text-sm font-medium flex items-center gap-2">
+                  <div className="w-4 h-4 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  </div>
+                  Foto "Depois"
+                </label>
                 <Select value={selectedAfter} onValueChange={setSelectedAfter}>
-                  <SelectTrigger>
+                  <SelectTrigger className="border-0 bg-gray-50 dark:bg-gray-700/50">
                     <SelectValue placeholder="Selecione a foto atual" />
                   </SelectTrigger>
                   <SelectContent>
@@ -153,11 +175,18 @@ export default function PhotoComparison({ photos, weightRecords }: PhotoComparis
                       const record = getWeightRecordForPhoto(photo)
                       return (
                         <SelectItem key={photo.id} value={photo.id}>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded overflow-hidden">
+                              <img
+                                src={photo.filePath}
+                                alt="Preview"
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
                             <div>
                               <div className="font-medium">{record?.weight.toFixed(1)} kg</div>
                               <div className="text-xs text-muted-foreground">
-                                {new Date(photo.createdAt).toLocaleDateString('pt-BR')}
+                                {new Date(photo.createdAt).toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' })}
                               </div>
                             </div>
                           </div>
@@ -187,13 +216,13 @@ export default function PhotoComparison({ photos, weightRecords }: PhotoComparis
 
                 {comparisonMode === 'side-by-side' ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       <div className="text-center">
-                        <Badge variant="secondary">
-                          {getWeightRecordForPhoto(beforePhoto)?.weight.toFixed(1)} kg - {new Date(beforePhoto.createdAt).toLocaleDateString('pt-BR')}
+                        <Badge variant="secondary" className="bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 border-0">
+                          {getWeightRecordForPhoto(beforePhoto)?.weight.toFixed(1)} kg • {new Date(beforePhoto.createdAt).toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' })}
                         </Badge>
                       </div>
-                      <div className="aspect-square rounded-lg overflow-hidden border">
+                      <div className="aspect-square rounded-xl overflow-hidden border-0 shadow-lg">
                         <img
                           src={beforePhoto.filePath}
                           alt={beforePhoto.description || 'Foto antes'}
@@ -201,17 +230,17 @@ export default function PhotoComparison({ photos, weightRecords }: PhotoComparis
                         />
                       </div>
                       {beforePhoto.description && (
-                        <p className="text-sm text-muted-foreground text-center">{beforePhoto.description}</p>
+                        <p className="text-sm text-muted-foreground text-center font-medium">{beforePhoto.description}</p>
                       )}
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       <div className="text-center">
-                        <Badge variant="secondary">
-                          {getWeightRecordForPhoto(afterPhoto)?.weight.toFixed(1)} kg - {new Date(afterPhoto.createdAt).toLocaleDateString('pt-BR')}
+                        <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border-0">
+                          {getWeightRecordForPhoto(afterPhoto)?.weight.toFixed(1)} kg • {new Date(afterPhoto.createdAt).toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' })}
                         </Badge>
                       </div>
-                      <div className="aspect-square rounded-lg overflow-hidden border">
+                      <div className="aspect-square rounded-xl overflow-hidden border-0 shadow-lg">
                         <img
                           src={afterPhoto.filePath}
                           alt={afterPhoto.description || 'Foto depois'}
@@ -219,7 +248,7 @@ export default function PhotoComparison({ photos, weightRecords }: PhotoComparis
                         />
                       </div>
                       {afterPhoto.description && (
-                        <p className="text-sm text-muted-foreground text-center">{afterPhoto.description}</p>
+                        <p className="text-sm text-muted-foreground text-center font-medium">{afterPhoto.description}</p>
                       )}
                     </div>
                   </div>
@@ -254,26 +283,26 @@ export default function PhotoComparison({ photos, weightRecords }: PhotoComparis
                 )}
 
                 {/* Estatísticas da Comparação */}
-                <div className="mt-4 p-4 bg-muted rounded-lg">
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                    <div>
-                      <div className="text-sm text-muted-foreground">Peso Inicial</div>
-                      <div className="font-bold">{getWeightRecordForPhoto(beforePhoto)?.weight.toFixed(1)} kg</div>
+                <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-green-50 dark:from-blue-900/20 dark:to-green-900/20 rounded-xl border-0">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="text-center">
+                      <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">Peso Inicial</div>
+                      <div className="text-lg font-bold text-foreground">{getWeightRecordForPhoto(beforePhoto)?.weight.toFixed(1)} kg</div>
                     </div>
-                    <div>
-                      <div className="text-sm text-muted-foreground">Peso Atual</div>
-                      <div className="font-bold">{getWeightRecordForPhoto(afterPhoto)?.weight.toFixed(1)} kg</div>
+                    <div className="text-center">
+                      <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">Peso Atual</div>
+                      <div className="text-lg font-bold text-foreground">{getWeightRecordForPhoto(afterPhoto)?.weight.toFixed(1)} kg</div>
                     </div>
-                    <div>
-                      <div className="text-sm text-muted-foreground">Diferença</div>
-                      <div className="font-bold text-green-600">
-                        {(getWeightRecordForPhoto(beforePhoto)!.weight - getWeightRecordForPhoto(afterPhoto)!.weight).toFixed(1)} kg
+                    <div className="text-center">
+                      <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">Diferença</div>
+                      <div className="text-lg font-bold text-green-600 dark:text-green-400">
+                        -{(getWeightRecordForPhoto(beforePhoto)!.weight - getWeightRecordForPhoto(afterPhoto)!.weight).toFixed(1)} kg
                       </div>
                     </div>
-                    <div>
-                      <div className="text-sm text-muted-foreground">Dias</div>
-                      <div className="font-bold">
-                        {Math.ceil((new Date(afterPhoto.createdAt).getTime() - new Date(beforePhoto.createdAt).getTime()) / (1000 * 60 * 60 * 24))}
+                    <div className="text-center">
+                      <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">Período</div>
+                      <div className="text-lg font-bold text-foreground">
+                        {Math.ceil((new Date(afterPhoto.createdAt).getTime() - new Date(beforePhoto.createdAt).getTime()) / (1000 * 60 * 60 * 24))} dias
                       </div>
                     </div>
                   </div>

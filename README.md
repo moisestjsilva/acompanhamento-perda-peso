@@ -60,6 +60,13 @@ This scaffold provides a robust foundation built with:
 # Install dependencies
 npm install
 
+# Configure environment variables
+cp .env.example .env
+# Edit .env with your database URL and other configurations
+
+# Setup database
+npm run db:push
+
 # Start development server
 npm run dev
 
@@ -71,6 +78,20 @@ npm start
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to see your application running.
+
+## 🗄️ Database Setup
+
+This project uses PostgreSQL with Prisma ORM. For production deployment on Vercel:
+
+### Local Development
+1. Install PostgreSQL locally or use a cloud service like [Neon](https://neon.tech) or [Supabase](https://supabase.com)
+2. Update `DATABASE_URL` in `.env` with your PostgreSQL connection string
+3. Run `npm run db:push` to sync your database schema
+
+### Production (Vercel)
+1. Create a PostgreSQL database (recommended: Neon, Supabase, or Vercel Postgres)
+2. Add `DATABASE_URL` environment variable in your Vercel project settings
+3. Deploy - Prisma will automatically generate the client during build
 
 ## 🤖 Powered by Z.ai
 

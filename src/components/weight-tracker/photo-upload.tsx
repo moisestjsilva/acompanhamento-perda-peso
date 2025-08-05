@@ -116,28 +116,29 @@ export default function PhotoUpload({
   return (
     <div className="space-y-4">
       {/* Upload Section */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Camera className="h-5 w-5" />
+      <Card className="border-0 shadow-sm bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Camera className="h-5 w-5 text-pink-500" />
             Enviar Fotos
           </CardTitle>
-          <CardDescription>
-            Adicione fotos para acompanhar sua evolução visual
+          <CardDescription className="text-sm">
+            Adicione fotos para acompanhar sua evolução
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 pt-0">
           <div className="space-y-2">
-            <Label htmlFor="description">Descrição (opcional)</Label>
+            <Label htmlFor="description" className="text-sm font-medium">Descrição (opcional)</Label>
             <Input
               id="description"
               placeholder="Ex: Foto frontal, lateral, etc."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              className="border-0 bg-gray-50 dark:bg-gray-700/50 focus:bg-white dark:focus:bg-gray-700"
             />
           </div>
           
-          <div className="flex items-center gap-4">
+          <div className="space-y-3">
             <input
               ref={fileInputRef}
               type="file"
@@ -149,14 +150,14 @@ export default function PhotoUpload({
             <Button
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading}
-              className="flex items-center gap-2"
+              className="w-full h-12 bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 border-0 text-white font-medium"
             >
-              <Upload className="h-4 w-4" />
+              <Upload className="h-5 w-5 mr-2" />
               {uploading ? 'Enviando...' : 'Selecionar Foto'}
             </Button>
             
-            <div className="text-sm text-muted-foreground">
-              Formatos: JPEG, PNG, WebP (max 10MB)
+            <div className="text-xs text-center text-muted-foreground bg-gray-50 dark:bg-gray-700/30 rounded-lg p-2">
+              Formatos: JPEG, PNG, WebP • Máximo: 10MB
             </div>
           </div>
         </CardContent>
@@ -164,18 +165,18 @@ export default function PhotoUpload({
 
       {/* Photos Grid */}
       {photos.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <ImageIcon className="h-5 w-5" />
+        <Card className="border-0 shadow-sm bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <ImageIcon className="h-5 w-5 text-blue-500" />
               Fotos Enviadas ({photos.length})
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <CardContent className="pt-0">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
               {photos.map((photo) => (
                 <div key={photo.id} className="relative group">
-                  <div className="aspect-square rounded-lg overflow-hidden border">
+                  <div className="aspect-square rounded-xl overflow-hidden border-0 shadow-sm">
                     <img
                       src={photo.filePath}
                       alt={photo.description || photo.originalName}
@@ -183,12 +184,12 @@ export default function PhotoUpload({
                     />
                   </div>
                   
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all duration-200 rounded-xl flex items-center justify-center">
                     <Button
                       size="sm"
                       variant="destructive"
                       onClick={() => handleDeletePhoto(photo.id)}
-                      className="h-8 w-8 p-0"
+                      className="h-8 w-8 p-0 bg-red-500 hover:bg-red-600 border-0"
                     >
                       <X className="h-4 w-4" />
                     </Button>
@@ -196,14 +197,14 @@ export default function PhotoUpload({
                   
                   <div className="mt-2 space-y-1">
                     {photo.description && (
-                      <p className="text-sm font-medium">{photo.description}</p>
+                      <p className="text-xs font-medium text-foreground truncate">{photo.description}</p>
                     )}
-                    <div className="flex items-center gap-2">
-                      <Badge variant="secondary" className="text-xs">
+                    <div className="flex items-center justify-between">
+                      <Badge variant="secondary" className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-0">
                         {formatFileSize(photo.fileSize)}
                       </Badge>
                       <span className="text-xs text-muted-foreground">
-                        {new Date(photo.createdAt).toLocaleDateString('pt-BR')}
+                        {new Date(photo.createdAt).toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' })}
                       </span>
                     </div>
                   </div>
