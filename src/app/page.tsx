@@ -9,13 +9,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
-import { TrendingDown, Target, Calendar, Plus, Scale } from 'lucide-react'
+import { TrendingDown, Target, Calendar, Plus, Scale, Camera, Image as ImageIcon } from 'lucide-react'
+import PhotoUpload from '@/components/weight-tracker/photo-upload'
+import PhotoComparison from '@/components/weight-tracker/photo-comparison'
 
 interface WeightRecord {
   id: string
   weight: number
   date: string
   notes?: string
+  photos?: any[]
 }
 
 interface UserProfile {
@@ -41,17 +44,23 @@ export default function Home() {
   const [newWeight, setNewWeight] = useState('')
   const [newNotes, setNewNotes] = useState('')
   const [loading, setLoading] = useState(false)
+  const [selectedRecord, setSelectedRecord] = useState<WeightRecord | null>(null)
+  const [allPhotos, setAllPhotos] = useState<any[]>([])
+
+  // Mock user ID para demonstração
+  const mockUserId = 'user-123'
 
   // Dados mockados para demonstração
   useEffect(() => {
     // Simulando dados iniciais
-    setWeightRecords([
-      { id: '1', weight: 75.5, date: '2024-01-01', notes: 'Peso inicial' },
-      { id: '2', weight: 74.8, date: '2024-01-08', notes: 'Primeira semana' },
-      { id: '3', weight: 74.2, date: '2024-01-15', notes: 'Progresso bom' },
-      { id: '4', weight: 73.5, date: '2024-01-22', notes: 'Continuando' },
-      { id: '5', weight: 72.8, date: '2024-01-29', notes: 'Ótimo progresso' },
-    ])
+    const mockRecords: WeightRecord[] = [
+      { id: '1', weight: 75.5, date: '2024-01-01', notes: 'Peso inicial', photos: [] },
+      { id: '2', weight: 74.8, date: '2024-01-08', notes: 'Primeira semana', photos: [] },
+      { id: '3', weight: 74.2, date: '2024-01-15', notes: 'Progresso bom', photos: [] },
+      { id: '4', weight: 73.5, date: '2024-01-22', notes: 'Continuando', photos: [] },
+      { id: '5', weight: 72.8, date: '2024-01-29', notes: 'Ótimo progresso', photos: [] },
+    ]
+    setWeightRecords(mockRecords)
     
     setUserProfile({
       height: 170,
@@ -70,6 +79,33 @@ export default function Home() {
         achieved: false
       }
     ])
+
+    // Simular algumas fotos
+    const mockPhotos = [
+      {
+        id: 'photo-1',
+        filename: 'progress-1.jpg',
+        originalName: 'foto-inicial.jpg',
+        filePath: '/uploads/progress-1.jpg',
+        fileSize: 1024000,
+        mimeType: 'image/jpeg',
+        description: 'Foto inicial - frente',
+        weightRecordId: '1',
+        createdAt: '2024-01-01T10:00:00.000Z'
+      },
+      {
+        id: 'photo-2',
+        filename: 'progress-2.jpg',
+        originalName: 'foto-progresso.jpg',
+        filePath: '/uploads/progress-2.jpg',
+        fileSize: 1150000,
+        mimeType: 'image/jpeg',
+        description: 'Após 1 mês - frente',
+        weightRecordId: '5',
+        createdAt: '2024-01-29T10:00:00.000Z'
+      }
+    ]
+    setAllPhotos(mockPhotos)
   }, [])
 
   const currentWeight = weightRecords.length > 0 ? weightRecords[weightRecords.length - 1].weight : 0
@@ -86,13 +122,18 @@ export default function Home() {
       id: Date.now().toString(),
       weight: parseFloat(newWeight),
       date: new Date().toISOString().split('T')[0],
-      notes: newNotes
+      notes: newNotes,
+      photos: []
     }
     
     setWeightRecords([...weightRecords, newRecord])
     setNewWeight('')
     setNewNotes('')
     setLoading(false)
+  }
+
+  const handlePhotoUploaded = (photo: any) => {
+    setAllPhotos(prev => [photo, ...prev])
   }
 
   const calculateBMI = () => {
@@ -110,6 +151,10 @@ export default function Home() {
 
   const bmi = calculateBMI()
   const bmiInfo = getBMICategory(bmi)
+
+  const getPhotosForRecord = (recordId: string) => {
+    return allPhotos.filter(photo => photo.weightRecordId === recordId)
+  }
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-6">
@@ -167,21 +212,24 @@ export default function Home() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Progresso</CardTitle>
-              <Calendar className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">Fotos</CardTitle>
+              <Camera className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{progressPercentage.toFixed(0)}%</div>
-              <Progress value={progressPercentage} className="mt-2" />
+              <div className="text-2xl font-bold">{allPhotos.length}</div>
+              <p className="text-xs text-muted-foreground">
+                Fotos de progresso
+              </p>
             </CardContent>
           </Card>
         </div>
 
         <Tabs defaultValue="chart" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="chart">Gráfico de Evolução</TabsTrigger>
-            <TabsTrigger value="register">Registrar Peso</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="chart">Gráfico</TabsTrigger>
+            <TabsTrigger value="register">Registrar</TabsTrigger>
             <TabsTrigger value="history">Histórico</TabsTrigger>
+            <TabsTrigger value="photos">Fotos</TabsTrigger>
             <TabsTrigger value="goals">Metas</TabsTrigger>
           </TabsList>
 
@@ -263,26 +311,150 @@ export default function Home() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-2 max-h-96 overflow-y-auto">
-                  {weightRecords.map((record) => (
-                    <div key={record.id} className="flex justify-between items-center p-3 border rounded-lg">
-                      <div>
-                        <div className="font-medium">{record.weight.toFixed(1)} kg</div>
-                        <div className="text-sm text-muted-foreground">
-                          {new Date(record.date).toLocaleDateString('pt-BR')}
-                        </div>
-                        {record.notes && (
-                          <div className="text-sm text-muted-foreground mt-1">{record.notes}</div>
-                        )}
-                      </div>
-                      <div className="text-right">
-                        {record.id !== weightRecords[weightRecords.length - 1]?.id && (
-                          <div className="text-sm text-green-600">
-                            -{(weightRecords[weightRecords.findIndex(r => r.id === record.id) - 1]?.weight - record.weight).toFixed(1)} kg
+                  {weightRecords.map((record) => {
+                    const recordPhotos = getPhotosForRecord(record.id)
+                    return (
+                      <div key={record.id} className="flex justify-between items-start p-3 border rounded-lg">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <div className="font-medium">{record.weight.toFixed(1)} kg</div>
+                            {recordPhotos.length > 0 && (
+                              <Badge variant="secondary" className="text-xs">
+                                <Camera className="h-3 w-3 mr-1" />
+                                {recordPhotos.length} foto(s)
+                              </Badge>
+                            )}
                           </div>
-                        )}
+                          <div className="text-sm text-muted-foreground">
+                            {new Date(record.date).toLocaleDateString('pt-BR')}
+                          </div>
+                          {record.notes && (
+                            <div className="text-sm text-muted-foreground mt-1">{record.notes}</div>
+                          )}
+                          {recordPhotos.length > 0 && (
+                            <div className="mt-2">
+                              <div className="text-xs text-muted-foreground mb-1">Fotos:</div>
+                              <div className="flex gap-1">
+                                {recordPhotos.slice(0, 3).map((photo) => (
+                                  <div key={photo.id} className="w-12 h-12 rounded overflow-hidden border">
+                                    <img
+                                      src={photo.filePath}
+                                      alt={photo.description}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                ))}
+                                {recordPhotos.length > 3 && (
+                                  <div className="w-12 h-12 rounded border bg-muted flex items-center justify-center text-xs">
+                                    +{recordPhotos.length - 3}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                        <div className="text-right">
+                          {record.id !== weightRecords[weightRecords.length - 1]?.id && (
+                            <div className="text-sm text-green-600">
+                              -{(weightRecords[weightRecords.findIndex(r => r.id === record.id) - 1]?.weight - record.weight).toFixed(1)} kg
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="photos" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Camera className="h-5 w-5" />
+                    Fotos de Progresso
+                  </CardTitle>
+                <CardDescription>
+                  Adicione fotos para acompanhar sua evolução visual
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  {/* Seletor de registro para associar fotos */}
+                  <div className="space-y-2">
+                    <Label>Selecione um registro de peso para adicionar fotos:</Label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                      {weightRecords.map((record) => (
+                        <Button
+                          key={record.id}
+                          variant={selectedRecord?.id === record.id ? "default" : "outline"}
+                          onClick={() => setSelectedRecord(record)}
+                          className="justify-start"
+                        >
+                          <div className="text-left">
+                            <div className="font-medium">{record.weight.toFixed(1)} kg</div>
+                            <div className="text-xs opacity-70">
+                              {new Date(record.date).toLocaleDateString('pt-BR')}
+                            </div>
+                          </div>
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Componente de upload de fotos */}
+                  {selectedRecord && (
+                    <PhotoUpload
+                      userId={mockUserId}
+                      weightRecordId={selectedRecord.id}
+                      onPhotoUploaded={handlePhotoUploaded}
+                      existingPhotos={getPhotosForRecord(selectedRecord.id)}
+                    />
+                  )}
+
+                  {/* Galeria geral de fotos */}
+                  {allPhotos.length > 0 && (
+                    <div>
+                      <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <ImageIcon className="h-5 w-5" />
+                        Todas as Fotos ({allPhotos.length})
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                        {allPhotos.map((photo) => {
+                          const record = weightRecords.find(r => r.id === photo.weightRecordId)
+                          return (
+                            <div key={photo.id} className="relative group">
+                              <div className="aspect-square rounded-lg overflow-hidden border">
+                                <img
+                                  src={photo.filePath}
+                                  alt={photo.description || photo.originalName}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                              <div className="mt-2 space-y-1">
+                                {photo.description && (
+                                  <p className="text-sm font-medium">{photo.description}</p>
+                                )}
+                                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                                  <span>{record?.weight.toFixed(1)} kg</span>
+                                  <span>{new Date(photo.createdAt).toLocaleDateString('pt-BR')}</span>
+                                </div>
+                              </div>
+                            </div>
+                          )
+                        })}
                       </div>
                     </div>
-                  ))}
+                  )}
+
+                  {/* Componente de comparação de fotos */}
+                  {allPhotos.length >= 2 && (
+                    <PhotoComparison
+                      photos={allPhotos}
+                      weightRecords={weightRecords}
+                    />
+                  )}
                 </div>
               </CardContent>
             </Card>

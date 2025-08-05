@@ -23,6 +23,7 @@ model User {
   profile   UserProfile?
   weightRecords WeightRecord[]
   goals     Goal[]
+  photos    Photo[]  // Relacionamento com fotos
 }
 
 model UserProfile {
@@ -48,9 +49,29 @@ model WeightRecord {
   notes     String?
   
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  photos    Photo[]  // Relacionamento com fotos
   createdAt DateTime @default(now())
   
   @@unique([userId, date])
+}
+
+model Photo {
+  id          String   @id @default(cuid())
+  userId      String
+  weightRecordId String
+  filename    String   // nome do arquivo
+  originalName String // nome original do arquivo
+  filePath    String   // caminho do arquivo
+  fileSize    Int      // tamanho em bytes
+  mimeType    String   // tipo MIME
+  description String?  // descrição opcional
+  takenAt     DateTime @default(now()) // quando a foto foi tirada
+  
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  weightRecord WeightRecord @relation(fields: [weightRecordId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Goal {
