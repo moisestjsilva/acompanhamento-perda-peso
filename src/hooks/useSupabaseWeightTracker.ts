@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { supabase } from '@/lib/supabase'
+import { getSupabaseClient } from '@/lib/supabase'
 
 interface WeightRecord {
   id: string
@@ -27,6 +27,7 @@ export function useSupabaseWeightTracker(userId: string) {
   // Buscar registros de peso
   const fetchWeightRecords = async () => {
     try {
+      const supabase = getSupabaseClient()
       const { data, error } = await supabase
         .from('weight_records')
         .select('*')
@@ -43,6 +44,7 @@ export function useSupabaseWeightTracker(userId: string) {
   // Buscar perfil do usuário
   const fetchUserProfile = async () => {
     try {
+      const supabase = getSupabaseClient()
       const { data, error } = await supabase
         .from('user_weight_profiles')
         .select('*')
@@ -59,6 +61,7 @@ export function useSupabaseWeightTracker(userId: string) {
   // Adicionar novo registro de peso
   const addWeightRecord = async (weight: number, notes?: string) => {
     try {
+      const supabase = getSupabaseClient()
       const { data, error } = await supabase
         .from('weight_records')
         .insert([
@@ -85,6 +88,7 @@ export function useSupabaseWeightTracker(userId: string) {
   // Atualizar perfil do usuário
   const updateUserProfile = async (profile: Partial<UserProfile>) => {
     try {
+      const supabase = getSupabaseClient()
       const { data, error } = await supabase
         .from('user_weight_profiles')
         .upsert([
